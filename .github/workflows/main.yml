@@ -1,0 +1,50 @@
+# This name will show up in the GitHub Actions tab
+name: CI-CD Matrix Build
+
+# This controls when the workflow runs
+# We set it to run on every 'push' to the repository
+on:
+  push:
+
+# This section defines the jobs to run
+jobs:
+  build:
+    # We will use the latest Ubuntu for all jobs
+    runs-on: ubuntu-latest
+    
+    # This is the 'matrix' strategy
+    strategy:
+      matrix:
+        # We define 3 variants for 'python-version'
+        # This will create 3 parallel jobs
+        python-version: ['3.9', '3.10', '3.11']
+
+    # These are the steps each of the 3 jobs will run
+    steps:
+      # This is a standard step to check out your code
+      - name: Check out repository code
+        uses: actions/checkout@v4
+
+      # This step sets up the specific Python version for the job
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      # This step has the required identifier: matrix-b5eb70a
+      - name: Show Python version (Challenge Step)
+        id: matrix-b5eb70a
+        run: echo "Building with Python ${{ matrix.python-version }}"
+
+      # This step creates the unique artifact file for this job
+      - name: Generate build artifact
+        run: echo "This is the build output for Python ${{ matrix.python-version }}" > build-log-${{ matrix.python-version }}.txt
+
+      # This step uploads the file we just created
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          # This creates the artifact name with the required prefix
+          name: build-b5eb70a-py${{ matrix.python-version }}
+          # This tells the uploader which file to grab
+          path: build-log-${{ matrix.python-version }}.txt
