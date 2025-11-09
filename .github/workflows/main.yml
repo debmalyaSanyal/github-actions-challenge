@@ -1,18 +1,12 @@
-# This name will show up in the GitHub Actions tab
 name: CI-CD Matrix Build
 
-# This controls when the workflow runs
-# We set it to run on every 'push' to the repository
 on:
   push:
 
-# This section defines the jobs to run
 jobs:
   build:
-    # We will use the latest Ubuntu for all jobs
     runs-on: ubuntu-latest
     
-    # This is the 'matrix' strategy
     strategy:
       matrix:
         # We define 3 variants for 'python-version'
@@ -31,9 +25,9 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      # This step has the required identifier: matrix-b5eb70a
-      - name: Show Python version (Challenge Step)
-        id: matrix-b5eb70a
+      # --- THIS IS THE CORRECTED STEP ---
+      # The identifier is now in the 'name' field, as required
+      - name: matrix-b5eb70a
         run: echo "Building with Python ${{ matrix.python-version }}"
 
       # This step creates the unique artifact file for this job
